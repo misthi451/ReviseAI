@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReviseAI — Your AI Study Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --secondary: #a855f7;
+      --accent: #ec4899;
+      --light: #f8f9ff;
+      --dark: #0f0f1e;
+      --gray-light: #e0e7ff;
+      --gray-dark: #4f46e5;
+      --success: #10b981;
+      --text-dark: #1a1a2e;
+      --text-light: #ffffff;
+      --border-light: #e0e7ff;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.15);
+      --radius: 16px;
+      --radius-lg: 24px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f8f9ff 0%, #f0e7ff 50%, #ffe7f0 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+    }
+
+    /* ─────── NAVBAR ─────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 5%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-dark);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+    }
+
+    /* ─────── HERO SECTION ─────── */
+    #hero {
+      padding: 60px 5% 80px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 20px;
+      animation: slideDown 0.6s ease both;
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 7vw, 56px);
+      line-height: 1.1;
+      margin-bottom: 16px;
+      color: var(--text-dark);
+      animation: slideDown 0.6s 0.1s ease both;
+    }
+
+    .hero-title .grad {
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+      color: #666;
+      max-width: 600px;
+      margin: 0 auto 32px;
+      animation: slideDown 0.6s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: slideDown 0.6s 0.3s ease both;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ─────── BUTTONS ─────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 12px;
+      border-radius: 10px;
+    }
+
+    /* ─────── APP SECTION ─────── */
+    #app {
+      padding: 60px 5%;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .input-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-lg);
+      animation: cardSlideUp 0.6s ease both;
+    }
+
+    @keyframes cardSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-title {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+    }
+
+    .card-subtitle {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    /* ─────── TABS ─────── */
+    .tab-navigation {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--gray-light);
+      padding-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      background: transparent;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -19px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ─────── INPUT FIELDS ─────── */
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--gray-light);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s;
+      background: #f9f9ff;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius);
+      padding: 30px;
+      text-align: center;
+      background: rgba(99, 102, 241, 0.05);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.dragover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: var(--secondary);
+    }
+
+    .upload-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    /* ─────── OUTPUT SECTION ─────── */
+    #outputSection {
+      display: none;
+      animation: fadeIn 0.6s ease;
+    }
+
+    #outputSection.active {
+      display: block;
+    }
+
+    .output-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-lg);
+      animation: cardSlideUp 0.6s ease both;
+    }
+
+    .output-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--gray-light);
+      padding-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .output-tab {
+      padding: 10px 20px;
+      background: transparent;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -19px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .output-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .output-content {
+      display: none;
+    }
+
+    .output-content.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .notes-content h3 {
+      color: var(--primary);
+      margin: 20px 0 12px;
+      font-size: 18px;
+    }
+
+    .notes-content p {
+      color: #555;
+      margin-bottom: 12px;
+      line-height: 1.8;
+    }
+
+    .notes-content strong {
+      color: var(--secondary);
+    }
+
+    /* ─────── FLASHCARDS ─────── */
+    .flashcards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .flashcard {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+      border: 2px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--radius);
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .flashcard:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+    }
+
+    .flashcard-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .flashcard-text {
+      font-size: 16px;
+      color: var(--text-dark);
+      font-weight: 500;
+      line-height: 1.6;
+      transition: all 0.3s;
+    }
+
+    /* ─────── LOADING STATE ─────── */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .loading-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .loading-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      max-width: 400px;
+      animation: slideDown 0.4s ease;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--gray-light);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      margin: 0 auto 24px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .loading-step {
+      font-size: 14px;
+      color: #888;
+      min-height: 20px;
+    }
+
+    /* ─────── ACTION BUTTONS ─────── */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    /* ─────── RESPONSIVE ─────── */
+    @media (max-width: 768px) {
+      .input-card,
+      .output-card {
+        padding: 24px;
+      }
+
+      .hero-title {
+        font-size: 28px;
+      }
+
+      .flashcards-container {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        gap: 12px;
+      }
+
+      nav {
+        padding: 12px 5%;
+      }
+    }
+
+    /* ─────── UTILITY ─────── */
+    .hidden {
+      display: none !important;
+    }
+
+    .text-muted {
+      color: #888;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .mb-20 {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─────── NAVBAR ─────── -->
+<nav>
+  <div class="logo">✨ ReviseAI</div>
+  <div class="nav-links">
+    <a href="#hero" class="nav-link">Home</a>
+    <a href="#app" class="nav-link">App</a>
+    <button class="btn btn-primary btn-small">Get Started</button>
+  </div>
+</nav>
+
+<!-- ─────── HERO SECTION ─────── -->
+<section id="hero">
+  <div class="hero-badge">🚀 AI-Powered Study Companion</div>
+  <h1 class="hero-title">One Click. <span class="grad">Full Revision.</span></h1>
+  <p class="hero-subtitle">Transform any YouTube video, topic, or document into comprehensive notes, flashcards, and summaries instantly.</p>
+  <div class="hero-actions">
+    <button class="btn btn-primary" onclick="document.getElementById('app').scrollIntoView({ behavior: 'smooth' })">
+      Start Studying →
+    </button>
+    <button class="btn btn-secondary">Learn More</button>
+  </div>
+</section>
+
+<!-- ─────── APP SECTION ─────── -->
+<section id="app">
+  <!-- INPUT CARD -->
+  <div class="input-card">
+    <h2 class="card-title">📚 What do you want to learn?</h2>
+    <p class="card-subtitle">Choose any method to get started</p>
+
+    <!-- TAB NAVIGATION -->
+    <div class="tab-navigation">
+      <button class="tab-btn active" onclick="switchTab(event, 'text')">📝 Text Input</button>
+      <button class="tab-btn" onclick="switchTab(event, 'youtube')">▶️ YouTube</button>
+      <button class="tab-btn" onclick="switchTab(event, 'search')">🔍 Search Topic</button>
+      <button class="tab-btn" onclick="switchTab(event, 'file')">📁 Upload File</button>
+    </div>
+
+    <!-- TEXT INPUT TAB -->
+    <div id="text-tab" class="tab-content active">
+      <div class="input-group">
+        <label class="input-label">Paste your study material here</label>
+        <textarea id="textInput" placeholder="Paste lecture notes, textbook content, research articles, or any study material here..."></textarea>
+      </div>
+    </div>
+
+    <!-- YOUTUBE TAB -->
+    <div id="youtube-tab" class="tab-content">
+      <div class="input-group">
+        <label class="input-label">Enter YouTube Video URL</label>
+        <input type="text" id="youtubeInput" placeholder="https://www.youtube.com/watch?v=..." />
+      </div>
+      <p class="text-muted" style="font-size: 12px;">📌 Works with educational videos - lectures, tutorials, explanations, etc.</p>
+    </div>
+
+    <!-- SEARCH TOPIC TAB -->
+    <div id="search-tab" class="tab-content">
+      <div class="input-group">
+        <label class="input-label">Enter a topic to study</label>
+        <input type="text" id="searchInput" placeholder="e.g., Photosynthesis, World War II, Calculus..." />
+      </div>
+      <p class="text-muted" style="font-size: 12px;">🌐 We'll search and compile comprehensive notes from the topic</p>
+    </div>
+
+    <!-- FILE UPLOAD TAB -->
+    <div id="file-tab" class="tab-content">
+      <div class="input-group">
+        <label class="input-label">Upload your document</label>
+        <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+          <div class="upload-icon">📄</div>
+          <p style="margin-bottom: 8px; color: var(--primary); font-weight: 600;">Drag and drop your file here</p>
+          <p style="color: #888; font-size: 12px;">or</p>
+          <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(event)" accept=".pdf,.doc,.docx,.txt"/>
+          <button class="btn btn-primary btn-small mt-20" onclick="document.getElementById('fileInput').click()">
+            Choose File
+          </button>
+        </div>
+        <p class="text-muted" style="font-size: 12px; margin-top: 12px;">📦 Supported: PDF, DOC, DOCX, TXT (Max 50MB)</p>
+      </div>
+    </div>
+
+    <!-- GENERATE BUTTON -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" onclick="generatePack()">
+        ✨ Generate Study Pack
+      </button>
+      <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+    </div>
+  </div>
+
+  <!-- OUTPUT SECTION -->
+  <div id="outputSection">
+    <div class="output-card">
+      <h2 class="card-title">📖 Your Study Pack</h2>
+
+      <!-- OUTPUT TABS -->
+      <div class="output-tabs">
+        <button class="output-tab active" onclick="switchOutputTab(event, 'notes')">📝 Notes</button>
+        <button class="output-tab" onclick="switchOutputTab(event, 'flashcards')">🎴 Flashcards</button>
+        <button class="output-tab" onclick="switchOutputTab(event, 'summary')">⚡ Quick Summary</button>
+      </div>
+
+      <!-- NOTES OUTPUT -->
+      <div id="notes-tab" class="output-content active">
+        <div id="notesContent" class="notes-content"></div>
+      </div>
+
+      <!-- FLASHCARDS OUTPUT -->
+      <div id="flashcards-tab" class="output-content">
+        <div id="flashcardsContent" class="flashcards-container"></div>
+        <p class="text-muted mt-20" style="font-size: 12px;">💡 Click any card to flip between question and answer</p>
+      </div>
+
+      <!-- SUMMARY OUTPUT -->
+      <div id="summary-tab" class="output-content">
+        <div id="summaryContent" class="notes-content"></div>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="downloadStudyPack()">📥 Download Pack</button>
+        <button class="btn btn-secondary" onclick="generateNewPack()">🔄 Generate Another</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-card">
+    <div class="spinner"></div>
+    <div class="loading-text">Generating Your Pack...</div>
+    <div class="loading-step" id="loadingStep">Extracting key concepts...</div>
+  </div>
+</div>
+
+<!-- ─────── SCRIPTS ─────── -->
+<script>
+  // ========== SAMPLE DATA ==========
+  const sampleNotes = `
+    <h3>Photosynthesis - Complete Guide</h3>
+    <p><strong>Definition:</strong> Photosynthesis is the process by which plants use sunlight, water, and carbon dioxide to create oxygen and energy in the form of glucose.</p>
+    <p><strong>Chemical Equation:</strong> 6CO₂ + 6H₂O + Light Energy → C₆H₁₂O₆ + 6O₂</p>
+    
+    <h3>Two Main Stages</h3>
+    <p><strong>1. Light-Dependent Reactions (Thylakoid Membrane)</strong></p>
+    <p>• Occurs in: Thylakoid membranes of chloroplasts</p>
+    <p>• Requires: Light energy</p>
+    <p>• Process: Water molecules are split, releasing oxygen</p>
+    <p>• Products: ATP and NADPH (energy carriers)</p>
+    
+    <p><strong>2. Light-Independent Reactions / Calvin Cycle (Stroma)</strong></p>
+    <p>• Occurs in: Stroma of chloroplasts</p>
+    <p>• Requires: ATP and NADPH from light reactions</p>
+    <p>• Process: CO₂ is fixed and reduced to form glucose</p>
+    <p>• Products: Glucose (C₆H₁₂O₆)</p>
+
+    <h3>Key Pigments</h3>
+    <p><strong>Chlorophyll:</strong> Main photosynthetic pigment (green color)</p>
+    <p><strong>Carotenoids:</strong> Accessory pigments (yellow, orange, red)</p>
+    <p><strong>Xanthophyll:</strong> Yellow pigment</p>
+
+    <h3>Factors Affecting Photosynthesis</h3>
+    <p>• Light intensity - More light = faster rate (up to a limit)</p>
+    <p>• CO₂ concentration - More CO₂ = faster rate</p>
+    <p>• Temperature - Optimal around 25-35°C</p>
+    <p>• Water availability - Essential raw material</p>
+  `;
+
+  const sampleFlashcards = [
+    { q: 'What is the primary pigment in photosynthesis?', a: 'Chlorophyll - absorbs light energy and gives plants their green color' },
+    { q: 'Where do light-dependent reactions occur?', a: 'In the thylakoid membranes of the chloroplast' },
+    { q: 'What are the products of the Calvin Cycle?', a: 'Glucose (C₆H₁₂O₆) and other organic compounds' },
+    { q: 'What is the overall equation for photosynthesis?', a: '6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂' },
+    { q: 'What do light reactions produce that fuels the Calvin Cycle?', a: 'ATP and NADPH (energy carriers)' },
+    { q: 'Why are plants green?', a: 'Because chlorophyll reflects green light and absorbs red and blue light' },
+    { q: 'What is the function of the Calvin Cycle?', a: 'To fix CO₂ and produce glucose using energy from ATP and NADPH' }
+  ];
+
+  const sampleSummary = `
+    <h3>🎯 Quick Revision Summary</h3>
+    <p><strong>What is Photosynthesis?</strong></p>
+    <p>The process where plants convert light energy, water, and CO₂ into glucose and oxygen.</p>
+
+    <p><strong>Key Equation:</strong> 6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂</p>
+
+    <p><strong>Two Stages:</strong></p>
+    <p>🔆 <strong>Light Reactions (Thylakoid)</strong> - Uses light to split water and produce ATP + NADPH</p>
+    <p>🌙 <strong>Calvin Cycle (Stroma)</strong> - Uses ATP + NADPH to convert CO₂ into glucose</p>
+
+    <p><strong>Important Pigments:</strong></p>
+    <p>• Chlorophyll (green) - Main light absorber</p>
+    <p>• Carotenoids (yellow/orange) - Accessory pigments</p>
+
+    <p><strong>Factors Affecting Rate:</strong></p>
+    <p>☀️ Light intensity • 💨 CO₂ concentration • 🌡️ Temperature • 💧 Water availability</p>
+
+    <p><strong>Key Takeaway:</strong> Photosynthesis is essential for converting solar energy into chemical energy that sustains almost all life on Earth.</p>
+  `;
+
+  // ========== TAB FUNCTIONS ==========
+  function switchTab(e, tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    
+    e.target.classList.add('active');
+    document.getElementById(tab + '-tab').classList.add('active');
+  }
+
+  function switchOutputTab(e, tab) {
+    document.querySelectorAll('.output-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.output-tab').forEach(el => el.classList.remove('active'));
+    
+    e.target.classList.add('active');
+    document.getElementById(tab + '-tab').classList.add('active');
+  }
+
+  // ========== FILE HANDLING ==========
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        document.getElementById('textInput').value = `[File: ${file.name}]\n\n${content.substring(0, 1000)}...`;
+      };
+      reader.readAsText(file);
+    }
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    e.target.closest('.upload-zone').classList.add('dragover');
+  }
+
+  function handleDragLeave(e) {
+    e.target.closest('.upload-zone').classList.remove('dragover');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    e.target.closest('.upload-zone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      document.getElementById('fileInput').files = e.dataTransfer.files;
+      handleFileUpload({ target: { files: [file] } });
+    }
+  }
+
+  // ========== MAIN FUNCTIONALITY ==========
+  async function generatePack() {
+    const textInput = document.getElementById('textInput').value;
+    const youtubeInput = document.getElementById('youtubeInput').value;
+    const searchInput = document.getElementById('searchInput').value;
+
+    if (!textInput && !youtubeInput && !searchInput) {
+      alert('❌ Please provide input - text, YouTube link, or search topic');
+      return;
+    }
+
+    // Show loading
+    document.getElementById('loadingOverlay').classList.add('show');
+
+    const loadingSteps = [
+      'Extracting key concepts...',
+      'Building summary structure...',
+      'Generating flashcards...',
+      'Creating detailed notes...',
+      'Compiling revision pack...',
+      'Adding final touches...'
+    ];
+
+    let step = 0;
+    const interval = setInterval(() => {
+      document.getElementById('loadingStep').textContent = loadingSteps[step % loadingSteps.length];
+      step++;
+    }, 500);
+
+    // Simulate processing delay
+    setTimeout(() => {
+      clearInterval(interval);
+
+      try {
+        // Process input (in production, call API here)
+        if (youtubeInput) {
+          console.log('Processing YouTube:', youtubeInput);
+          // const response = await fetch('/api/youtube', { method: 'POST', body: JSON.stringify({ url: youtubeInput }) });
+        } else if (searchInput) {
+          console.log('Processing search:', searchInput);
+          // const response = await fetch('/api/search', { method: 'POST', body: JSON.stringify({ topic: searchInput }) });
+        } else if (textInput) {
+          console.log('Processing text input');
+          // const response = await fetch('/api/process-text', { method: 'POST', body: JSON.stringify({ text: textInput }) });
+        }
+
+        // Display results
+        displayResults();
+
+        document.getElementById('loadingOverlay').classList.remove('show');
+        document.getElementById('outputSection').classList.add('active');
+        
+        setTimeout(() => {
+          document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+
+      } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error generating pack. Please try again.');
+        document.getElementById('loadingOverlay').classList.remove('show');
+      }
+    }, 3000);
+  }
+
+  function displayResults() {
+    // Display notes
+    document.getElementById('notesContent').innerHTML = sampleNotes;
+
+    // Display flashcards
+    let flashcardsHTML = '';
+    sampleFlashcards.forEach((card, index) => {
+      flashcardsHTML += `
+        <div class="flashcard" onclick="flipFlashcard(this)">
+          <div class="flashcard-label">Question</div>
+          <div class="flashcard-text" data-question="${card.q}" data-answer="${card.a}">${card.q}</div>
+        </div>
+      `;
+    });
+    document.getElementById('flashcardsContent').innerHTML = flashcardsHTML;
+
+    // Display summary
+    document.getElementById('summaryContent').innerHTML = sampleSummary;
+  }
+
+  function flipFlashcard(el) {
+    const textEl = el.querySelector('.flashcard-text');
+    const labelEl = el.querySelector('.flashcard-label');
+    const isQuestion = labelEl.textContent === 'Question';
+
+    if (isQuestion) {
+      labelEl.textContent = 'Answer';
+      textEl.textContent = textEl.dataset.answer;
+      el.style.background = 'linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15))';
+      el.style.borderColor = 'rgba(236, 72, 153, 0.4)';
+    } else {
+      labelEl.textContent = 'Question';
+      textEl.textContent = textEl.dataset.question;
+      el.style.background = 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1))';
+      el.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+    }
+  }
+
+  function downloadStudyPack() {
+    alert('✅ Download feature - Coming soon! Your study pack will be exported as PDF');
+  }
+
+  function generateNewPack() {
+    document.getElementById('outputSection').classList.remove('active');
+    clearAll();
+    window.scrollTo({ top: document.getElementById('app').offsetTop - 100, behavior: 'smooth' });
+  }
+
+  function clearAll() {
+    document.getElementById('textInput').value = '';
+    document.getElementById('youtubeInput').value = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('fileInput').value = '';
+  }
+</script>
+
+</body>
+</html>
